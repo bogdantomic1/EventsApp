@@ -1,0 +1,20 @@
+#body{
+    background-color: blanchedalmond;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 20px 20px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    width: 500px;
+  }
+  
+  button:hover {
+    background-color: lightblue;
+  }
