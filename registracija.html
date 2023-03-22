@@ -4,23 +4,181 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apitoken" content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi">
     <title>Register</title>
     <link rel="stylesheet" href="css/registracija.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+
+$(function(){
+
+//Ime i prezime restrikcije
+$('#fullName').on('blur', function(){
+    var ip = /^[A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+[\s-][A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+([\s-][A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+)*$/.test($(this).val());
+
+    if(ip === true)
+    {
+        $(this).css({
+            'border-width': '2px',
+            'border-style': 'inset',
+            'border-color': 'grey',
+            'background-color': 'field'
+        });
+        $('#p1').empty();
+        
+    }
+    else
+    {
+        $(this).css('border','solid 5px orange');
+        $('#p1').html("Ime i prezime nije pravilno napisano");
+    }
+});
+
+//Telefon restrikcije
+$('#phone').on('blur',function (){
+    var tel = /^[+][1-9][0-9]/.test($(this).val());
+
+    if(tel === true){
+        $(this).css({
+            'border-width': '2px',
+            'border-style': 'inset',
+            'border-color': 'grey',
+            'background-color': 'field'
+        });
+        $('#p2').empty();
+    }
+    else{
+        $(this).css('border','solid 5px orange');
+        $('#p2').html("Telefon nije ispravan");
+    }
+});
+
+//Password restrikcije
+$('#password1').on('blur',function (){
+    var pas = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\s!@#%&.-])(?=.{6,})/.test($(this).val());
+    if(pas === true){
+        $(this).css({
+            'border-width': '2px',
+            'border-style': 'inset',
+            'border-color': 'grey',
+            'background-color': 'field'
+        });
+        $('#p4').empty();
+        }
+    else{
+        $(this).css('border','solid 5px orange');
+        $('#p4').html("Lozinka nije dovoljno jaka");
+        console.log($('#pass').val());
+    }
+});
+
+//ponovljena lozinka restrikcije
+$('#password2').on('blur', function (){
+    var pass1 = $('#pass').val();
+    var pass2 = $('#pass_p').val();
+
+    if(pass1 === pass2){
+        $(this).css({
+            'border-width': '2px',
+            'border-style': 'inset',
+            'border-color': 'grey',
+            'background-color': 'field'
+        });
+        $('#p5').empty();
+    }
+    else{
+        $(this).css('border','solid 5px orange');
+        $('#p5').html("Lozinke se ne poklapaju");
+    }
+});
+
+//email restrikcije
+$('#email').on('blur',function (){
+    var mejl = $(this).val();
+
+    if(mejl === ""){
+        $(this).css('border','solid 5px orange');
+        $('#p3').html("Niste uneli mejl");
+    }
+    else{
+        $(this).css({
+            'border-width': '2px',
+            'border-style': 'inset',
+            'border-color': 'grey',
+            'background-color': 'field'
+        });
+        $('#p3').empty();
+    }
+});
+
+
+var form = new FormData();
+
+$('#forma').submit(function(e){
+    e.preventDefault();
+    form.append("name", $('#fullName').val());
+    form.append("email", $('#email').val());
+    form.append("phone",$('#phone').val());
+    form.append("password", $('#password1').val());
+    form.append("apitoken", $('meta[name="apitoken"]').attr('content'));
+
+    $.ajax({
+        "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/register",
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Accept": "application/json"
+        },
+        "processData": false,
+        "mimeType": "multipart/form-data",
+        "contentType": false,
+        "data": form,
+        "dataType": "json",
+        "success": function (response) {
+            if(response.error)
+            {
+                $('#p6').html(response.error);
+                $('#p6').css({
+                    'color':'red',
+                    'text-align':'center'
+                });
+                $('#email').val("");
+            }
+            else
+            {
+                window.location = 'prijava.html';
+            
+            }
+
+        },
+        "error": function (response) {
+            console.log(response.error);
+        }
+    })
+});
+});
+
+    </script>
+
+
 </head>
 <body id="body">
 <form id="forma" method="post" action="https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/register">
-    <input type="text" placeholder="Full Name">
+    <input type="text" id="fullName" placeholder="Full Name" required minlength="5" maxlength="180">
     <p id="p1"></p>
-    <input type="text" placeholder="Phone">
+    <input type="text" id="phone" placeholder="Phone">
     <p id="p2"></p>
-    <input type="text" placeholder="Email">
+    <input type="text" id="email" placeholder="Email">
     <p id="p3"></p>
-    <input type="password" placeholder="Password">
+    <input type="password" id="password1" placeholder="Password">
     <p id="p4"></p>
-    <input type="password" placeholder="Repeat Password">
+    <input type="password" id="password2"  placeholder="Repeat Password">
     <p id="p5"></p>
 
-    <button>Register</button>
+    <button type="submit">Register</button>
+    <p id ="p6"id></p>
+
+    <a href="index.html">Vrati nazad</a>
 </form>
 </body>
 </html>

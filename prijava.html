@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apitoken" content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi">
+
+    <link rel="stylesheet" href="css/prijava.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+    <title>Prijava</title>
+    <script>
+        $(function(){
+            var form = new FormData();
+
+            $('#forma').on('submit', function(e){
+                e.preventDefault();
+
+                form.append("email", $('#email').val());
+                form.append("password", $('#password').val());
+                form.append("apitoken", $('meta[name="apitoken"]').attr('content'));
+
+                $.ajax({
+                    "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/login",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Accept": "application/json"
+                    },
+                    "processData": false,
+                    "mimeType": "multipart/form-data",
+                    "contentType": false,
+                    "data": form,
+                    "dataType": "json",
+                    "success": function (response) {
+                        console.log(response);
+                        localStorage.setItem('token', response.token);
+                        localStorage.setItem('type', response.type);
+                        if(response.type == "администратор")
+                        {
+                            window.location = 'administracija.html';
+                        }
+                        else if(response.type == "регистровани корисник")
+                        {
+                            window.location = 'events.html';
+                        }
+
+                    },
+                    "error": function (response) {
+                        if(response.responseJSON != undefined){
+                              console.log(response.responseJSON.error);
+                          }
+                        //console.log(response.responseJSON.error);
+                        $('#p_button').html(response.responseJSON.error);
+                        $('#p_button').css({
+                            'color':'red',
+                            'text-align':'center'
+                        });
+                        $('#password').val("");
+                    }
+                })
+            })
+
+        });
+    </script>
+
+</head>
+
+
+
+
+<body>
+    <h1>Prijava</h1>
+    <form id="forma" method="post" action="https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/login">
+        <input type="email" id="email" placeholder="Email" required>
+        <p id="p_email"></p>
+
+        <input type="password" id="password" placeholder="Password" required>
+        <p id="p_password"></p>
+
+        <button type="submit">Prijavi se</button>
+        <p id="p_button"></p>
+
+    </form>
+
+    <a href="index.html">Vrati nazad</a>
+    
+</body>
+</html>

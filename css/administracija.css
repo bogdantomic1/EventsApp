@@ -1,0 +1,39 @@
+/* Style the dropdown button */
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: 200px; /* set the width to 200px or any other desired value */
+    margin: auto; /* center the button horizontally */
+  }
+  
+  /* Dropdown container - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Style the dropdown content (links) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    width: 200px; /* set the width to 200px or any other desired value */
+  }
+  
+  /* Show the dropdown menu on hover */
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  /* Change the background color of the dropdown button when the dropdown content is shown */
+  .dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+  }
+  
+
+  
+  
