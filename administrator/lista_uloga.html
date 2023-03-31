@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Administracija</title>
+    <meta name="apitoken" content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi">
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <style>
+        body{
+            margin: 0;
+        }
+        button{
+            font-weight: bold;
+            height:30px;
+        }
+
+        table{
+            position:absolute;
+            top:70px;
+            left:50px;
+            border: solid black 1px;
+            height: 5%;
+            width: 50%;
+            border-collapse: collapse;
+        }
+        th,td{
+            border: solid black 1px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        #korisnici{
+            position: absolute;
+            top: 500px;
+        }
+    </style>
+
+    <script>
+        $(function (){
+            var duzina =[];
+            var duzina1 = [];
+            var duz = [];
+            var settings = {
+                "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/uloga?apitoken="+ $('meta[name="apitoken"]').attr('content'),
+                "method": "GET",
+                "timeout": 0,
+                "headers": {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
+            };
+
+            $.ajax(settings).done(function (response){
+                console.log(response);
+                response.forEach((element,index) => {
+                    $('tbody').append(
+                        '<tr>' +
+                        '<td>' + element.id +'</td>'+
+                        '<td>' + element.naziv +'</td>'+
+                        '<td>' + element.opis +'</td>'+
+                        // '<td><a target="_blank" href="'+ element.naziv + ".html" + '">' + duz[index] +'</a></td>' +
+                        '<td><button type="button" name="dugme" value=' + element.id + '>' + duz[index] +'</button></td>' +
+                        '</tr>'
+                    );
+                })
+                $('button[name="dugme"]').on('click', function (){
+                    var br = $(this).val();
+                    console.log(br);
+                    sessionStorage.setItem('id_uloga',$(this).val());
+                    window.location = 'uloga.html';
+                })
+            });
+
+        });
+
+
+
+     
+    </script>
+</head>
+<body>
+    <table>
+        <thead>
+        <th>id</th>
+        <th>Naziv</th>
+        <th>Opis</th>
+        <th>Broj korisnika</th>
+        </thead>
+        <tbody id="uloge"></tbody>
+    </table>
+</body>
+</html>

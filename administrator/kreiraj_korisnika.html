@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apitoken" content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi">
+    <title>Kreiraj korisnika</title>
+    <link rel="stylesheet" href="../css/kreiraj_korisnika.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    
+<script>
+
+    $(function(){
+        //Ime i prezime ogranicenja
+        $('#ime_prezime').on('blur', function(){
+                var ip = /^[A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+[\s-][A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+([\s-][A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+)*$/.test($(this).val());
+
+                if(ip === true)
+                {
+                    $(this).css({
+                        'border-width': '2px',
+                        'border-style': 'inset',
+                        'border-color': 'grey',
+                        'background-color': 'field'
+                    });
+                    $('#p_ime').empty();
+                }
+                else
+                {
+                    $(this).css('border','solid 5px orange');
+                    $('#p_ime').html("Ime i prezime nije pravilno napisano");
+                }
+        });
+        //telefon ogranicenja
+        $('#phone').on('blur',function (){
+                var tel = /^[+][1-9][0-9]/.test($(this).val());
+
+                if(tel === true)
+                {
+                    $(this).css({
+                        'border-width': '2px',
+                        'border-style': 'inset',
+                        'border-color': 'grey',
+                        'background-color': 'field'
+                    });
+                    $('#p_phone').empty();
+                }
+                else
+                {
+                    $(this).css('border','solid 5px orange');
+                    $('#p_phone').html("Telefon nije ispravan");
+                }
+        });
+
+        //Password ogranicenja
+        $('#pass').on('blur',function (){
+                var pas = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\s!@#%&.-])(?=.{6,})/.test($(this).val());
+                if(pas === true){
+                    $(this).css({
+                        'border-width': '2px',
+                        'border-style': 'inset',
+                        'border-color': 'grey',
+                        'background-color': 'field'
+                    });
+                    $('#p_password').empty();
+                }
+                else{
+                    $(this).css('border','solid 5px orange');
+                    $('#p_password').html("Lozinka nije dovoljno jaka");
+                    
+
+                }
+        });
+
+        //Ponovljenja lozinka ogranicenja
+        $('#password2').on('blur', function (){
+            var pass1 = $('#password').val();
+            var pass2 = $('#password2').val();
+
+            if(pass1 === pass2){
+                (this).css({
+                        'border-width': '2px',
+                        'border-style': 'inset',
+                        'border-color': 'grey',
+                        'background-color': 'field'
+                });
+                $('#p_password2').empty();
+            }
+            else{
+                $(this).css('border','solid 5px orange');
+                $('#p_password2').html("Lozinke se ne poklapaju");
+            }
+        });
+
+        //Email ogranicenja
+        $('#email').on('blur',function (){
+                var mejl = $(this).val();
+
+                if(mejl === "")
+                {
+                    $(this).css('border','solid 5px orange');
+                    $('#p5').html("Niste uneli mejl");
+                }
+                else
+                {
+                    $(this).css({
+                        'border-width': '2px',
+                        'border-style': 'inset',
+                        'border-color': 'grey',
+                        'background-color': 'field'
+                    });
+                    $('#p_email').empty();
+                }
+        });
+
+        var form = new FormData();
+        //niz uloga
+        var uloge = {
+            "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/uloga?apitoken="+ $('meta[name="apitoken"]').attr('content'),
+            "method": "GET",
+            "timeout": 0,
+            "headers": {
+                "Accept": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('token')
+            },
+        };
+
+        //dodavanje iz niza uloga u select izbor
+        $.ajax(uloge).done(function (response) {
+            console.log(response);
+            response.forEach((element,index) => {
+                if (element.naziv !== "блокирани корисник"){
+                    $('#uloga').append('<option value="'+ element.id +'" >' + element.naziv + '</option>');
+                }
+
+            })
+        });
+
+        $('#uloga').on('change',function(){
+            console.log($(this).val());
+            if($(this).val() === "2"){
+                var lokacije = {
+                    "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/lokacija?apitoken=" + $('meta[name="apitoken"]').attr('content'),
+                    "method": "GET",
+                    "timeout": 0,
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem('token')
+                    },
+                };
+
+                $.ajax(lokacije).done(function (response){
+                    response.forEach((element,index) =>{
+                        $('#lokacije').append('<option value="'+ element.id +'">' + element.naziv + '</option>')
+                    })
+                });
+                $('#lokacije').show();
+            }
+
+            else{
+                $('#lokacije').hide();
+            }
+        });
+
+
+        $('#forma').submit(function(e){
+                e.preventDefault();
+                var form = new FormData();
+                form.append("name", $('#ime_prezime').val());
+                form.append("phone",$('#phone').val());
+                form.append("email", $('#email').val());
+                form.append("password", $('#password').val());
+                form.append("userRoleId", $('#uloga').val());
+                form.append("locationId", $('#lokacije').val());
+                form.append("apitoken", $('meta[name="apitoken"]').attr('content'));
+
+                $.ajax({
+                    "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/korisnik",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Accept": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem('token')
+                    },
+                    "processData": false,
+                    "mimeType": "multipart/form-data",
+                    "contentType": false,
+                    "data": form,
+                    "dataType": "json",
+                    "success": function (response)
+                    {
+                        console.log(response);
+                        if($('#email').val="")
+                        {
+
+                        }
+                        console.log(response);
+                    },
+                    "error": function (response)
+                    {
+                        console.log(response);
+                        if(response.responseJSON.error === undefined)
+                        {
+                            $('#p_button').html(response.responseJSON.message);
+                            $('#p_button').css({
+                                'color':'red',
+                                'text-align':'center'
+                            });
+                            $('#email').val("");
+                        }
+                        console.log(response.responseJSON);
+                    }
+                })
+            });
+       
+        });
+
+
+
+
+
+
+</script>
+
+</head>
+<body>
+    <h1>Kreiranje korisnika</h1>
+    <form id="forma" method="post" action="https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/korisnik">
+
+        <input type="text" id="ime_prezime" name="ime_prezime" placeholder="Ime i  prezime" required minlength="5" maxlength="180"><br>
+        <p id="p_ime"></p>
+    
+        
+        <input type="text" id="phone" name="phone" placeholder="Phone" minlength="9" maxlength="14"> <br>
+        <p id="p_phone"></p>
+    
+        
+        <input type="email" id="email" name="email" placeholder="Email" required><br>
+        <p id="p_email"></p>
+    
+       
+        <input type="password" id="password" name="pwd" placeholder="Password" required><br>
+        <p id="p_password"></p>
+    
+       
+        <input type="password" id="password2" name="pwd2" placeholder="Ponovi password" required><br>
+        <p id="p_password2"></p>
+    
+        <select id="uloga"></select>
+        <select id="lokacije"></select>
+        <button type="submit">Registruj korisnika</button>
+        <p id="p_button"></p>
+
+</body>
+</html>
+
+

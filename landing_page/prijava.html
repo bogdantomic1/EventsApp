@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apitoken" content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi">
 
-    <link rel="stylesheet" href="css/prijava.css">
+    <link rel="stylesheet" href="../css/prijava.css">
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
 
     <title>Prijava</title>
@@ -39,11 +39,11 @@
                         localStorage.setItem('type', response.type);
                         if(response.type == "администратор")
                         {
-                            window.location = 'administracija.html';
+                            window.location = '../administrator/administracija.html';
                         }
                         else if(response.type == "регистровани корисник")
                         {
-                            window.location = 'events.html';
+                            window.location = 'index.html';
                         }
 
                     },

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista korisnika</title>
+    <meta name="apitoken" content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi">
+    <link rel="stylesheet" href="../css/lista_korisnika.css">
+    <style>
+        body{
+            margin: 0;
+        }
+        button{
+            font-weight: bold;
+            height:30px;
+        }
+
+        table{
+            position:absolute;
+            top:70px;
+            left:50px;
+            border: solid black 1px;
+            height: 5%;
+            width: 50%;
+            border-collapse: collapse;
+        }
+        th,td{
+            border: solid black 1px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+        $(function(){
+            var settings = {
+                "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/korisnik?apitoken="+ $('meta[name="apitoken"]').attr('content'),
+                "method": "GET",
+                "timeout": 0,
+                "headers": {
+                    "Authorization": "Bearer " + localStorage.getItem('token')
+                },
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                response.forEach((element,index) =>
+                {
+                    var lokacija = "";
+                    if(element.lokacija !== undefined)
+                    {
+                        //console.log(element.lokacija.id);
+                        lokacija = element.lokacija.naziv;
+                        var lokacija_1 = '<td><button style="height: 35px" type="button" name="lokacije" value= '+ element.lokacija.id + '>' + element.lokacija.naziv +'</button></td>';
+                        var id_lokacije = element.lokacija.id;
+                    }
+                    else {
+
+                        lokacija = "/";
+                        var lokacija_1 = '<td>' + "/" + '</td>';
+
+                    }
+
+                    var dogadjaj;
+                    if(element.dogadjaj === undefined)
+                    {
+                        dogadjaj = "/";
+                    }
+
+                    $('tbody').append(
+                        '<tr>' +
+                        '<td>' + element.id +'</td>'+
+                        '<td>' + element.imePrezime +'</td>'+
+                        '<td>' + element.email +'</td>'+
+                        '<td>' + element.telefon +'</td>' +
+                        lokacija_1 +
+                        '<td><button type="button" style="height: 35px" name="uloge" value=' + element.uloga.id + '>' + element.uloga.naziv  +'</button></td>' +
+                        '<td>' + dogadjaj + '</td>' +
+                        '<td>' + "/" + '</td>' +
+                        '<td><button type="button" value="'+ element.id +'" name="izmena">Izmeni</button><button name="obrisi" value="'+ element.id +'" >Obrisi</button></td>' +
+                        '</tr>'
+                    )
+                    lokacija = "";
+
+                    if(element.uloga.naziv === "регистровани корисник" || element.uloga.naziv === "блокирани корисник")
+                    {
+                       //console.log(element.imePrezime);
+                    }
+
+
+                })
+
+                $('button[name="izmena"]').on('click', function (){
+                    window.location = 'izmena.html';
+                    console.log($(this).val());
+                    sessionStorage.setItem('id',$(this).val());
+                })
+
+                $('button[name="lokacije"]').on('click', function(){
+                    var br = $(this).val();
+                    console.log(br);
+                    sessionStorage.setItem('id_lokacije',$(this).val());
+                    window.location = 'lokacija.html';
+                })
+
+                $('button[name="uloge"]').on('click', function(){
+                    var br = $(this).val();
+                    console.log(br);
+                    sessionStorage.setItem('id_uloge',$(this).val());
+                    window.location = 'uloga_opis.html';
+                })
+
+                $('button[name="obrisi"]').on('click',function (){
+                    console.log($(this).val());
+                    var form = new FormData();
+                    var settings = {
+                        "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/korisnik/"+ $(this).val() + "?apitoken=" + $('meta[name="apitoken"]').attr('content'),
+                            "method": "DELETE",
+                            "timeout": 0,
+                            "headers": {
+                                "Accept": "application/json",
+                                "Authorization": "Bearer " + localStorage.getItem('token')
+                            },
+                            "processData": false,
+                            "mimeType": "multipart/form-data",
+                            "contentType": false,
+                            "data": form,
+                            "dataType" : "json",
+                            "success" : function (response){
+                                console.log(response);
+                    },
+                    };
+
+                    $.ajax(settings).done(function (response) {
+                        alert("Korisnik je obrisan");
+                        window.location.reload();
+                    });
+                })
+            });
+        })
+    </script>
+</head>
+<body>
+    <h1>Lista Korisnika</h1>
+<table>
+    <thead>
+        <th>id</th>
+        <th>Ime i prezime</th>
+        <th>Imejl</th>
+        <th>Telefon</th>
+        <th>Lokacija</th>
+        <th>Uloga</th>
+        <th>Dogadjaji</th>
+        <th>Ulaznice</th>
+        <th>Akcija</th>
+    </thead>
+    <tbody id="uloge"></tbody>
+</table>
+</body>
+</html>
