@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="apitoken"
+      content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi"
+    />
+    <link rel="stylesheet" href="../css/izmena_lokacije.css">
+    <title>Izmena lokacije</title>
+    
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.js"
+      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function () {
+        var settings = {
+          url:
+            "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/lokacija/" +
+            sessionStorage.getItem("id") +
+            "?apitoken=" +
+            $('meta[name="apitoken"]').attr("content"),
+          method: "GET",
+          timeout: 0,
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        };
+        var radno_vreme_izmena = [];
+        $.ajax(settings).done(function (response) {
+          console.log(response);
+
+          $("#id_lokacije").val(response.id);
+          $("#naziv").val(response.naziv);
+          $("#adresa").val(response.adresa);
+          $("#grad").val(response.grad);
+          $("#opis").val(response.opis);
+
+          response.radnoVreme.forEach((el, index) => {
+            console.log(el);
+            radno_vreme_izmena.push(el);
+            var dan = "";
+            var od = "";
+            var vreme_do = "";
+            
+
+            od = el.od;
+            vreme_do = el.do;
+            
+            $("#vreme_od_sati_" + el.dan).val(el.od);
+            $("#vreme_do_sati_" + el.dan).val(el.do);
+                  
+
+            
+          });
+        });
+
+        $("#vreme_od_sati_1").on("blur", function () {
+          $("#vreme_do_sati_1").prop("disabled", false);
+        });
+
+        $("#vreme_od_sati_2").on("blur", function () {
+          $("#vreme_do_sati_2").prop("disabled", false);
+          
+        });
+
+        $("#vreme_od_sati_3").on("blur", function () {
+          $("#vreme_do_sati_3").prop("disabled", false);
+          
+        });
+
+        $("#vreme_od_sati_4").on("blur", function () {
+          $("#vreme_do_sati_4").prop("disabled", false);
+          
+        });
+
+        $("#vreme_od_sati_5").on("blur", function () {
+          $("#vreme_do_sati_5").prop("disabled", false);
+         
+        });
+
+        $("#vreme_od_sati_6").on("blur", function () {
+          $("#vreme_do_sati_6").prop("disabled", false);
+         
+        });
+
+        $("#vreme_od_sati_7").on("blur", function () {
+          $("#vreme_do_sati_7").prop("disabled", false);
+         
+        });
+
+        console.log("vremeeeee " + radno_vreme_izmena);
+
+        $("#vreme_od_sati_1").on("change", function () {
+          var radni_dan = $("#1").val();
+          var br = 0;
+          radno_vreme_izmena.forEach((element, index) => {
+            br++;
+            if (radni_dan == element.dan) {
+              radno_vreme_izmena[index].od =
+                $("#vreme_od_sati_" + el.dan).val();
+              radno_vreme_izmena[index].do =
+                $("#vreme_do_sati_" + el.dan).val();
+            }
+            console.log(radno_vreme_izmena);
+          });
+
+        });
+
+        $('#forma').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+          "url": "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/lokacija/" + sessionStorage.getItem('id'),
+          "method": "PATCH",
+          "timeout": 0,
+          "headers": {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + localStorage.getItem('token'),
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          "data": {
+            "name": $('#naziv').val(),
+            "address": $('#adresa').val(),
+            "city": $('#grad').val(),
+            "description": $('#opis').val(),
+            "workingHours": JSON.stringify(radno_vreme_izmena),
+            "apitoken": $('meta[name="apitoken"]').attr('content')
+          },
+          "success": function (response){
+            console.log(response);
+          },
+          "error": function (response){
+            console.log(response);
+            },
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <form
+      id="forma"
+      method="post"
+      action="https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/lokacija"
+    >
+      <label for="naziv">Naziv lokacije:</label><br />
+      <input
+        type="text"
+        id="naziv"
+        name="naziv_lokacije"
+        placeholder="Ovde uneti naziv"
+        required
+      /><br />
+      <p id="p1"></p>
+
+      <label for="adresa">Adresa:</label><br />
+      <input
+        type="tel"
+        id="adresa"
+        name="adresa_lokacije"
+        placeholder="Ovde uneti adresu"
+        required
+      />
+      <br />
+      <p id="p2"></p>
+
+      <label for="grad">Grad:</label><br />
+      <input
+        type="text"
+        id="grad"
+        name="grad_lokacije"
+        placeholder="Ovde uneti grad"
+        required
+      /><br />
+      <p id="p5"></p>
+
+      <label for="opis">Opis:</label><br />
+      <textarea
+        id="opis"
+        name="opis_lokacije"
+        placeholder="Ovde unesite opis"
+      ></textarea>
+      <p id="p3"></p>
+
+      <div id="radno_vreme">
+        <label for="opis">Ponedeljak</label><br />
+        <input type="text" id="dan1" name="danUnedelji" value="1" hidden />
+        <input type="time" id="vreme_od_sati_1" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_1" name="vreme_do_sati" disabled />
+        <br /><br />
+
+        <label for="opis">Utorak</label><br />
+        <input type="text" id="dan2" name="danUnedelji" value="2" hidden />
+        <input type="time" id="vreme_od_sati_2" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_2" name="vreme_do_sati" disabled />
+        <br /><br />
+
+        <label for="opis">Sreda</label><br />
+        <input type="text" id="dan3" name="danUnedelji" value="3" hidden />
+        <input type="time" id="vreme_od_sati_3" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_3" name="vreme_do_sati" disabled />
+        <br /><br />
+
+        <label for="opis">Cetvrtak</label><br />
+        <input type="text" id="dan4" name="danUnedelji" value="4" hidden />
+        <input type="time" id="vreme_od_sati_4" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_4" name="vreme_do_sati" disabled />
+        <br /><br />
+
+        <label for="opis">Petak</label><br />
+        <input type="text" id="dan5" name="danUnedelji" value="5" hidden />
+        <input type="time" id="vreme_od_sati_5" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_5" name="vreme_do_sati" disabled />
+        <br /><br />
+
+        <label for="opis">Subota</label><br />
+        <input type="text" id="dan6" name="danUnedelji" value="6" hidden />
+        <input type="time" id="vreme_od_sati_6" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_6" name="vreme_do_sati" disabled />
+        <br /><br />
+
+        <label for="opis">Nedelja</label><br />
+        <input type="text" id="dan7" name="danUnedelji" value="7" hidden />
+        <input type="time" id="vreme_od_sati_7" name="vreme_od_sati" />
+        <input type="time" id="vreme_do_sati_7" name="vreme_do_sati" disabled />
+        <br /><br />
+      </div>
+
+      <button type="submit">Izmeni</button>
+      <p id="p6"></p>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lista korisnika</title>
+    <meta
+      name="apitoken"
+      content="UqohHTcuptTyrMpn3Mstk0PrRkPyC7M6IFzjGvegwmLE2cIxFJAlZHeFvlWPAqiMPguxPZ1a5vCvlGJhyXYJM97uqi"
+    />
+    <link rel="stylesheet" href="../css/lokacije.css">
+    
+    <script
+      src="https://code.jquery.com/jquery-3.6.1.js"
+      integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function () {
+        var settings = {
+          url:
+            "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/lokacija?apitoken=" +
+            $('meta[name="apitoken"]').attr("content"),
+          method: "GET",
+          timeout: 0,
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        };
+
+        $.ajax(settings).done(function (response) {
+          //console.log(response);
+
+          response.forEach((element, index) => {
+            var opis;
+            if (element.opis === null) {
+              opis = "/";
+            } else {
+              opis = element.opis;
+            }
+
+            var radno_vreme = "";
+            element.radnoVreme.forEach((el, index) => {
+              console.log(el);
+              var dan = "";
+              dan = el.dan;
+              switch (dan * 1) {
+                case 1:
+                  dan = "Ponedeljak";
+                  break;
+                case 2:
+                  dan = "Utorak";
+                  break;
+                case 3:
+                  dan = "Sreda";
+                  break;
+                case 4:
+                  dan = "Cetvrtak";
+                  break;
+                case 5:
+                  dan = "Petak";
+                  break;
+                case 6:
+                  dan = "Subota";
+                  break;
+                case 7:
+                  dan = "Nedelja";
+                  break;
+              }
+
+              radno_vreme += dan + ": " + el.od + " - " + el.do + "<br>";
+              
+
+              
+
+              
+             
+              console.log(radno_vreme);
+            });
+
+            $("tbody").append(
+              "<tr>" +
+                "<td>" +
+                element.id +
+                "</td>" +
+                "<td>" +
+                element.naziv +
+                "</td>" +
+                "<td>" +
+                element.grad +
+                "</td>" +
+                "<td>" +
+                element.adresa +
+                "</td>" +
+                "<td>" +
+                opis +
+                "</td>" +
+                "<td>" +
+                radno_vreme +
+                "</td>" +
+                "<td>" +
+                element.blagajnici.length +
+                "</td>" +
+                "<td>" +
+                element.dogadjaji.length +
+                "</td>" +
+                '<td><button type="button" value="' +
+                element.id +
+                '" name="izmena">Izmeni</button><br><button name="obrisi" value="' +
+                element.id +
+                '" >Obrisi</button></td>' +
+                "</tr>"
+            );
+
+            $('button[name="izmena"]').on("click", function () {
+              window.location = "izmena_lokacije.html";
+              console.log($(this).val());
+              sessionStorage.setItem("id", $(this).val());
+            });
+
+            $('button[name="obrisi"]').on("click", function () {
+              var form = new FormData();
+              $.ajax({
+                url:
+                  "https://vsis.mef.edu.rs/projekat/ulaznice/public_html/api/lokacija/" +
+                  $(this).val() +
+                  "?apitoken=" +
+                  $('meta[name = "apitoken"]').attr("content"),
+                method: "DELETE",
+                timeout: 0,
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + localStorage.getItem("token"),
+                },
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                data: form,
+                dataType: "json",
+                success: function () {
+                  console.log(response);
+                },
+                error: function () {
+                  console.log(response);
+                },
+              });
+            });
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <th>id</th>
+        <th>Naziv lokacije</th>
+        <th>Grad</th>
+        <th>Adresa</th>
+        <th>Opis</th>
+        <th>Radno vreme</th>
+        <th>Ukupan broj blagajnika</th>
+        <th>Ukupan broj dogadjaja</th>
+        <th>Akcija</th>
+      </thead>
+      <tbody id="uloge"></tbody>
+    </table>
+  </body>
+</html>

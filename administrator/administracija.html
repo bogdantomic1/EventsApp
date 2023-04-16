@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/administracija.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/administracija.css" />
     <title>Administrator</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Administrator Page</h1>
+    <div class="dropdown">
+      <button class="dropbtn">Korisnici</button>
+      <div class="dropdown-content">
+        <a href="lista_uloga.html">Lista svih uloga</a>
+        <a href="lista_korisnika.html">Lista svih korisnika</a>
+        <a href="kreiraj_korisnika.html">Kreiraj korisnika</a>
+      </div>
+    </div>
 
     <div class="dropdown">
-        <button class="dropbtn">Korisnici</button>
-        <div class="dropdown-content">
-          <a href="lista_uloga.html">Lista svih uloga</a>
-          <a href="lista_korisnika.html">Lista svih korisnika</a>
-          <a href="kreiraj_korisnika.html">Kreiraj korisnika</a>
-          
-        </div>
+      <button class="dropbtn">Lokacije</button>
+      <div class="dropdown-content">
+        <a href="kreiraj_lokaciju.html">Kreiraj lokaciju</a>
+        <a href="lokacije.html">Lista svih lokacija</a>
       </div>
-      
-      <div class="dropdown">
-        <button class="dropbtn">Lokacije</button>
-        <div class="dropdown-content">
-          <a href="#">Kreiraj lokaciju</a>
-          <a href="#">Lista svih lokacija</a>
-          
-        </div>
+    </div>
+
+    <div class="dropdown">
+      <button class="dropbtn">Dogadjaji</button>
+      <div class="dropdown-content">
+        <a href="#">Kreiraj dogadjaj</a>
       </div>
-      
-      <div class="dropdown">
-        <button class="dropbtn">Dogadjaji</button>
-        <div class="dropdown-content">
-          <a href="#">Kreiraj dogadjaj</a>
-        </div>
-      </div>
-<footer>
+    </div>
+    <footer>
       <a href="../landing_page/index.html">Vrati se na Pocetnu stranu</a>
     </footer>
-    
-</body>
+  </body>
 </html>

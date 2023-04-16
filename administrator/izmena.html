@@ -38,7 +38,6 @@ $.ajax(settings).done(function (response) {
         //Ime i prezime ogranicenja
         $('#ime_prezime').on('blur', function(){
                 var ip = /^[A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+[\s-][A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+([\s-][A-ZА-ШЉЊЋЂ][a-zа-шљњћђ]+)*$/.test($(this).val());
-
                 if(ip === true)
                 {
                     $(this).css({
@@ -76,7 +75,8 @@ $.ajax(settings).done(function (response) {
                 }
         });
 
-        //Password ogranicenja
+    
+        // Password ogranicenja
         $('#pass').on('blur',function (){
                 var pas = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\s!@#%&.-])(?=.{6,})/.test($(this).val());
                 if(pas === true){
